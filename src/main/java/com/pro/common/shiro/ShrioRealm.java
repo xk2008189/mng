@@ -1,4 +1,4 @@
-package com.pro.system.shiro;
+package com.pro.common.shiro;
 
 import javax.annotation.Resource;
 

@@ -38,7 +38,7 @@
        <!--  <property name="cacheManager" ref="cacheManager"></property>   -->
     </bean> 
     
-    <bean id="shiroRealm" class="com.pro.system.shiro.ShrioRealm"></bean>
+    <bean id="shiroRealm" class="com.pro.common.shiro.ShrioRealm"></bean>
     
     
     <!--   

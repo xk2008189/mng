@@ -9,10 +9,10 @@ import com.pro.system.entity.User;
 import com.pro.system.service.UserService;
 
 /** 
- * ¹¦ÄÜ¸ÅÒª£ºUserServiceµ¥Ôª²âÊÔ 
+ * ï¿½ï¿½ï¿½Ü¸ï¿½Òªï¿½ï¿½UserServiceï¿½ï¿½Ôªï¿½ï¿½ï¿½ï¿½ 
  *  
  * @author linbingwen 
- * @since  2015Äê9ÔÂ28ÈÕ  
+ * @since  2015ï¿½ï¿½9ï¿½ï¿½28ï¿½ï¿½  
  */  
 public class UserServiceTest extends SpringTestCase {  
     @Autowired  
@@ -21,8 +21,6 @@ public class UserServiceTest extends SpringTestCase {
       
     @Test  
     public void selectUserByIdTest(){  
-        User user = userService.selectUserById(10);  
-        logger.debug("²éÕÒ½á¹û" + user);  
     }  
       
   

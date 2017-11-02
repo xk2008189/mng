@@ -9,13 +9,13 @@
 <meta charset="utf-8">
 <title>Paper Stack</title>
 <link rel="stylesheet" type="text/css" href="<%=request.getContextPath() %>/static/css/login.css" />
+
 <script type="text/javascript" src="<%=request.getContextPath() %>/static/jquery/jquery-1.9.1.min.js"></script>
 </head>
 <body>
 <script type="text/javascript">
 	$(function(){
 		$('#loginbtn').click(function() {
-			alert("1111");
 		    var param = {
 		        username : $("#username").val(),
 		        password : $("#password").val()

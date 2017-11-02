@@ -10,7 +10,7 @@ import com.pro.system.entity.User;
 import com.pro.system.service.UserService;
 
 /** 
- * ¹¦ÄÜ¸ÅÒª£ºUserController 
+ * ï¿½ï¿½ï¿½Ü¸ï¿½Òªï¿½ï¿½UserController 
  *  
  * @author xiangkun 
  * 
@@ -20,14 +20,6 @@ public class UserController {
     @Resource  
     private UserService userService;  
       
-    @RequestMapping("/")    
-    public ModelAndView getIndex(){      
-    	System.out.println("2222");
-        ModelAndView mav = new ModelAndView("index");   
-        User user = userService.selectUserById(1);  
-        mav.addObject("user", user);   
-        return mav;    
-    }  
     
     @RequestMapping("/index.do")
     public String index(){

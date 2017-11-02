@@ -3,8 +3,17 @@ package com.pro.system.dao;
 import com.pro.system.entity.User;
 
 public interface UserDao {
+    int deleteByPrimaryKey(String id);
 
-	 public User selectUserById(Integer userId); 
-	 
-	 public User selectUserByName(String userName); 
+    int insert(User record);
+
+    int insertSelective(User record);
+
+    User selectByPrimaryKey(String id);
+
+    int updateByPrimaryKeySelective(User record);
+
+    int updateByPrimaryKey(User record);
+    
+    User selectUserByName(String userName);
 }

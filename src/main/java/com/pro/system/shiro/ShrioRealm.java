@@ -35,7 +35,7 @@ public class ShrioRealm  extends AuthorizingRealm{
          }
 		 if(username.endsWith(user.getUserName())){
 			 SimpleAuthenticationInfo authenticationInfo = new SimpleAuthenticationInfo(user.getUserName(),
-					 user.getUserPassword(), getName());
+					 user.getPassword(), getName());
 			 return authenticationInfo;
 		 }else{
 			 throw new AuthenticationException("用戶名不存在");

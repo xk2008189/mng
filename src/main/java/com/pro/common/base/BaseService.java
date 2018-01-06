@@ -1,5 +1,7 @@
 package com.pro.common.base;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,4 +47,8 @@ public  class BaseService<D extends BaseDao<T>,T> {
     public int updateByPrimaryKeySelective(T t){
     	return dao.updateByPrimaryKeySelective(t);
     };
+    
+    public List<T> findList(){
+    	return dao.findList();
+    }
 }

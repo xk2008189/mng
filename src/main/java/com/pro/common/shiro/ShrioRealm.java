@@ -6,7 +6,6 @@ import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.SimpleAuthenticationInfo;
-import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
@@ -16,7 +15,7 @@ import com.pro.system.service.UserService;
 
 public class ShrioRealm  extends AuthorizingRealm{
 	 @Resource  
-	    private UserService userService;  
+	 private UserService userService;  
 	
 	/**
 	 * 认证回调函数, 登录时调用
@@ -29,14 +28,14 @@ public class ShrioRealm  extends AuthorizingRealm{
 		 User user = userService.selectUserByName(username);  
 		 if (user == null) {
             // 用户名不存在抛出异常
-            throw new UnknownAccountException();
+			throw new AuthenticationException("用户名或密码错误");
          }
 		 if(username.endsWith(user.getUserName())){
 			 SimpleAuthenticationInfo authenticationInfo = new SimpleAuthenticationInfo(user.getUserName(),
 					 user.getPassword(), getName());
 			 return authenticationInfo;
 		 }else{
-			 throw new AuthenticationException("用戶名不存在");
+			 throw new AuthenticationException("用户名或密码错误");
 		 }
 
 	}

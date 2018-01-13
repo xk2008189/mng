@@ -33,7 +33,7 @@
 		            }
 		        },
 		        error: function(data) { 
-		            alert("调用失败...."); 
+		            alert("登录失败...."); 
 		        }
 		    });
 		});

@@ -42,8 +42,8 @@
 					<a href="#" class="dropDown_A">admin <i class="Hui-iconfont">&#xe6d5;</i></a>
 					<ul class="dropDown-menu menu radius box-shadow">
 						<li><a href="javascript:;" onClick="myselfinfo()">个人信息</a></li>
-						<li><a href="#">切换账户</a></li>
-						<li><a href="#">退出</a></li>
+						<li><a href="#" id = "swichUser">切换账户</a></li>
+						<li><a href="#" id = "loginout">退出</a></li>
 					</ul>
 				</li>
 				<li id="Hui-msg"> <a href="#" title="消息"><span class="badge badge-danger">1</span><i class="Hui-iconfont" style="font-size:18px">&#xe68a;</i></a> </li>
@@ -184,23 +184,34 @@
 <script type="text/javascript" src="<%=request.getContextPath() %>/static/h-ui.admin/js/H-ui.admin.js"></script> <!--/_footer 作为公共模版分离出去-->
 
 <!--请在下方写此页面业务相关的脚本-->
-<script type="text/javascript" src="lib/jquery.contextmenu/jquery.contextmenu.r2.js"></script>
+<script type="text/javascript" src="<%=request.getContextPath() %>/static/lib/jquery.contextmenu/jquery.contextmenu.r2.js"></script>
 <script type="text/javascript">
 $(function(){
-	/*$("#min_title_list li").contextMenu('Huiadminmenu', {
-		bindings: {
-			'closethis': function(t) {
-				console.log(t);
-				if(t.find("i")){
-					t.find("i").trigger("click");
-				}		
-			},
-			'closeall': function(t) {
-				alert('Trigger was '+t.id+'\nAction was Email');
-			},
-		}
-	});*/
+	$("#loginout").click(function(){
+		loginout();
+	})
+	$("#swichUser").click(function(){
+		loginout();
+	})
 });
+
+function loginout(){
+	$.ajax({ 
+        type: "get", 
+        url: "<%=request.getContextPath()%>" + "/loginout.do", 
+        success: function(data) { 
+            if(data.st == -1){
+                alert(data.msg);
+            }else{
+                //登出成功
+            	location.reload();
+            }
+        },
+        error: function(data) { 
+            alert("登出失败...."); 
+        }
+    });
+}
 /*个人信息*/
 function myselfinfo(){
 	layer.open({

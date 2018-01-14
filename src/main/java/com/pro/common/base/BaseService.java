@@ -48,7 +48,7 @@ public  class BaseService<D extends BaseDao<T>,T> {
     	return dao.updateByPrimaryKeySelective(t);
     };
     
-    public List<T> findList(){
-    	return dao.findList();
+    public List<T> findList(T t){
+    	return dao.findList(t);
     }
 }

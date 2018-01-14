@@ -56,6 +56,6 @@ public interface BaseDao<T> {
      * 查询所有数据
      * @return return
      */
-    public List<T> findList();
+    public List<T> findList(T t);
 	
 }

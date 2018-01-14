@@ -274,10 +274,19 @@
     where user_name = #{userName,jdbcType=VARCHAR}
   </select>
   <select id="findList" resultMap="BaseResultMap">
-		SELECT
-			<include refid="Base_Column_List"/>
-		from sys_user
-		WHERE del_flag = '0'
-		ORDER BY create_date desc
+	SELECT
+		<include refid="Base_Column_List"/>
+	from sys_user
+	WHERE del_flag = '0'
+	<if test="sqlMap.minCreateDate != null">
+         and create_date >= str_to_date( #{sqlMap.minCreateDate,jdbcType=VARCHAR},'%Y-%m-%d')
+    </if>
+    <if test="sqlMap.maxCreateDate != null">
+         <![CDATA[and create_date <= str_to_date( #{sqlMap.maxCreateDate,jdbcType=VARCHAR},'%Y-%m-%d')]]>
+    </if>
+    <if test="sqlMap.name != null">
+         and name like #{sqlMap.name,jdbcType=VARCHAR}
+    </if>
+	ORDER BY create_date desc
   </select>
 </mapper>

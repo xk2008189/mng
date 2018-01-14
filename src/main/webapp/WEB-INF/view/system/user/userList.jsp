@@ -18,16 +18,19 @@
 <title>用户管理</title>
 </head>
 <body>
-<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页  <span class="c-gray en">&gt;</span> 用户管理 <a class="btn btn-success radius r"   style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页  <span class="c-gray en">&gt;</span> 用户管理
+ <a class="btn btn-success radius r" id="userRefresh"  style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
 <div class="page-container">
-	<div class="text-c"> 日期范围：
-		<input type="text" onfocus="WdatePicker({ maxDate:'#F{$dp.$D(\'datemax\')||\'%y-%M-%d\'}' })" id="datemin" name="user.minCreateDate"  class="input-text Wdate" style="width:120px;">
-		-
-		<input type="text" onfocus="WdatePicker({ minDate:'#F{$dp.$D(\'datemin\')}',maxDate:'%y-%M-%d' })" id="datemax" name="user.maxCreateDate" class="input-text Wdate" style="width:120px;">
-		<input type="text" class="input-text" style="width:250px" placeholder="输入管理员名称" id="user.name" name="user.name">
-		<button type="submit" class="btn btn-success" id="submitBtn" ><i class="Hui-iconfont">&#xe665;</i> 搜用户</button>
+	<div class="text-c"> 
+		<form action="<%=request.getContextPath()%>/user/userList.do">
+			日期范围：<input type="text" onfocus="WdatePicker({ maxDate:'#F{$dp.$D(\'datemax\')||\'%y-%M-%d\'}' })" id="datemin" name="minCreateDate"  class="input-text Wdate" style="width:120px;">
+			-
+			<input type="text" onfocus="WdatePicker({ minDate:'#F{$dp.$D(\'datemin\')}',maxDate:'%y-%M-%d' })" id="datemax" name="maxCreateDate" class="input-text Wdate" style="width:120px;">
+			<input type="text" class="input-text" style="width:250px" placeholder="请输入姓名" id="name" name="name">
+			<button type="submit" class="btn btn-success" id="submitBtn" ><i class="Hui-iconfont">&#xe665;</i> 搜用户</button>
+		</form>
 	</div>
-	<div class="cl pd-5 bg-1 bk-gray mt-20"> <span class="l"><a href="javascript:;" onclick="datadel()" class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i> 批量删除</a> <a href="javascript:;" onclick="admin_add('添加管理员','<%=request.getContextPath()%>' + '/userAdd.do','800','500')" class="btn btn-primary radius"><i class="Hui-iconfont">&#xe600;</i> 添加管理员</a></span> <span class="r">共有数据：<strong>${count }</strong> 条</span> </div>
+	<div class="cl pd-5 bg-1 bk-gray mt-20"> <span class="l"><a href="javascript:;" onclick="deleteMore()" class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i> 批量删除</a> <a href="javascript:;" onclick="admin_add('添加管理员','<%=request.getContextPath()%>' + '/user/userAdd.do','800','500')" class="btn btn-primary radius"><i class="Hui-iconfont">&#xe600;</i> 添加管理员</a></span> <span class="r">共有数据：<strong>${count }</strong> 条</span> </div>
 	<table class="table table-border table-bordered table-bg">
 		<thead>
 			<tr>
@@ -49,20 +52,23 @@
 		<tbody>
 			<c:forEach items="${list}" var="user">
 				<tr class="text-c">
-					<td><input type="checkbox" value="${user.id}" name=""></td>
+					<td><input type="checkbox" value="${user.id}" name="userId"></td>
 					<td>${user.userCode}</td>
 					<td>${user.userName}</td>
 					<td>${user.name}</td>
-					<td>${user.gender}</td>
+					<c:if test="${user.gender eq 0}">
+						<td>男</td>
+					</c:if>
+					<c:if test="${user.gender eq 1}">
+						<td>女</td>
+					</c:if>
 					<td>${user.age}</td>
 					<td>${user.email}</td>
 					<td>${user.createDate}</td>
 					<td>${user.loginFlag}</td>
-					<!-- <td class="td-status"><span class="label label-success radius">已启用</span></td> -->
-					<!-- <td class="td-status"><span class="label radius">已停用</span></td> -->
 					<td class="td-manage"><a style="text-decoration:none" onClick="admin_stop(this,'10001')" href="javascript:;" title="停用"><i class="Hui-iconfont">&#xe631;</i></a> 
-					<a title="编辑" href="javascript:;" onclick="admin_edit('用户编辑','<%=request.getContextPath()%>' + '/userUpdate.do?userId=${user.id}','1','800','500')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6df;</i></a> 
-					<a title="删除" href="javascript:;" onclick="admin_del(this,'1')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6e2;</i></a></td>
+					<a title="编辑" href="javascript:;" onclick="admin_edit('用户编辑','<%=request.getContextPath()%>' + '/user/userUpdate.do?userId=${user.id}','1','800','500')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6df;</i></a> 
+					<a title="删除" href="javascript:;" onclick="admin_del(this,'${user.id}')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6e2;</i></a></td>
 				</tr>
 			</c:forEach>
 		</tbody>
@@ -95,8 +101,8 @@ function admin_add(title,url,w,h){
 function admin_del(obj,id){
 	layer.confirm('确认要删除吗？',function(index){
 		$.ajax({
-			type: 'POST',
-			url: '',
+			type: 'GET',
+			url: '<%=request.getContextPath()%>' + '/user/delete.do?userId='+id,
 			dataType: 'json',
 			success: function(data){
 				$(obj).parents("tr").remove();
@@ -113,6 +119,34 @@ function admin_del(obj,id){
 function admin_edit(title,url,id,w,h){
 	layer_show(title,url,w,h);
 }
+
+function deleteMore() {
+	var seleteIds = [];
+	$('input[name="userId"]:checked').each(function(i){
+		seleteIds.push($(this).val());
+	})
+	if (seleteIds.length > 0) {
+		layer.confirm('确认要删除吗？',function(index){
+			$.ajax({
+				type: 'POST',
+				url: '<%=request.getContextPath()%>/user/deleteSelect.do',
+				data:{"seleteIds" : JSON.stringify(seleteIds)},
+				dataType: 'json',
+				success: function(data){
+					$(obj).parents("tr").remove();
+					layer.msg('已删除!',{icon:1,time:1000});
+				},
+				error:function(data) {
+					console.log(data.msg);
+				},
+			});		
+		});
+	}
+	
+	
+	
+}
+
 /*管理员-停用*/
 function admin_stop(obj,id){
 	layer.confirm('确认要停用吗？',function(index){

@@ -135,7 +135,7 @@ $(function(){
 		submitHandler:function(form){
 			$(form).ajaxSubmit({
 				type: 'post',
-				url: "<%=request.getContextPath()%>" + "/add.do" ,
+				url: "<%=request.getContextPath()%>" + "/user/add.do" ,
 				success: function(data){
 					if (data.OK == 1) {
 						layer.msg('添加成功!',{icon:1,time:1000});

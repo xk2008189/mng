@@ -18,6 +18,7 @@
 <body>
 <article class="page-container">
 	<form class="form form-horizontal" id="form-admin-add">
+	<input type = "hidden" value = "${user.id }" id = "id" name = "id"/>
 	<div class="row cl">
 		<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>员工编号：</label>
 		<div class="formControls col-xs-8 col-sm-9">
@@ -34,7 +35,7 @@
 	<div class="row cl">
 		<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>初始密码：</label>
 		<div class="formControls col-xs-8 col-sm-9">
-			<input type="password" class="input-text" autocomplete="off" value="" placeholder="密码" id="password" name="password">
+			<input type="password" class="input-text" autocomplete="off" value="${user.password}" placeholder="密码" id="password" name="password">
 		</div>
 	</div>
 	<div class="row cl">
@@ -52,14 +53,26 @@
 	<div class="row cl">
 		<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>性别：</label>
 		<div class="formControls col-xs-8 col-sm-9 skin-minimal">
-			<div class="radio-box">
-				<input name="gender" type="radio" id="sex-1" value = '0' checked>
-				<label for="sex-1">男</label>
-			</div>
-			<div class="radio-box">
-				<input type="radio" id="sex-2" value = '1' name="gender">
-				<label for="sex-2">女</label>
-			</div>
+			<c:if test="${user.gender eq 0}">
+				<div class="radio-box">
+					<input name="gender" type="radio" id="sex-1" value = '0' checked>
+					<label for="sex-1">男</label>
+				</div>
+				<div class="radio-box">
+					<input type="radio" id="sex-2" value = '1' name="gender">
+					<label for="sex-2">女</label>
+				</div>	
+			</c:if>
+			<c:if test="${user.gender eq 1}">
+				<div class="radio-box">
+					<input name="gender" type="radio" id="sex-1" value = '0' >
+					<label for="sex-1">男</label>
+				</div>
+				<div class="radio-box">
+					<input type="radio" id="sex-2" value = '1' name="gender" checked>
+					<label for="sex-2">女</label>
+				</div>	
+			</c:if>
 		</div>
 	</div>
 	<div class="row cl">
@@ -135,7 +148,7 @@ $(function(){
 		submitHandler:function(form){
 			$(form).ajaxSubmit({
 				type: 'post',
-				url: "<%=request.getContextPath()%>" + "/update.do?userId=${user.id}" ,
+				url: "<%=request.getContextPath()%>" + "/user/update.do" ,
 				success: function(data){
 					if (data.OK == 1) {
 						layer.msg('修改成功!',{icon:1,time:1000});

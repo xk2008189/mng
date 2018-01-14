@@ -2,8 +2,15 @@ package com.pro.system.entity;
 
 import java.util.Date;
 
-public class User {
-    private String id;
+import com.pro.common.base.BaseEntity;
+
+public class User extends BaseEntity<User> {
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	private String id;
 
     private String departmentId;
 

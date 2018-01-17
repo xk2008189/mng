@@ -51,4 +51,8 @@ public  class BaseService<D extends BaseDao<T>,T> {
     public List<T> findList(T t){
     	return dao.findList(t);
     }
+    
+    public int count(T t) {
+    	return dao.count(t);
+    }
 }

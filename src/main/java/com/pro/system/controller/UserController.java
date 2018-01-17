@@ -38,7 +38,8 @@ public class UserController {
     public String index(Model model, @RequestParam(value="minCreateDate", required=false) String minCreateDate,
     		 @RequestParam(value="maxCreateDate", required=false) String maxCreateDate,
     		 @RequestParam(value="name", required=false) String name,
-    		 @RequestParam(value="page", required=false) Page page) throws ParseException{
+    		 @RequestParam(value="currentPageNo", required=false) Integer currentPageNo,
+    		 @RequestParam(value="pageSize", required=false) Integer pageSize) throws ParseException{
     	try {
 			User user = new User();
 			Map<String, Object> sqlMap = new HashMap<String, Object>();
@@ -51,13 +52,25 @@ public class UserController {
 			if (!StringUtils.isEmpty(name)) {
 				sqlMap.put("name", "%" + name + "%");
 			}
-			if (page == null) {
-				page = new Page();
-			}
 			user.setSqlMap(sqlMap);
+			int count = userService.count(user);
+			Page page = new Page();
+			if (currentPageNo != null) {
+				page.setCurrentPageNo(currentPageNo);
+			}
+			if (pageSize != null) {
+				page.setPageSize(pageSize);
+			}
+			page.setCount(count);
+			
+			sqlMap.put("index", (page.getCurrentPageNo() - 1) *  page.getPageSize());
+			sqlMap.put("pageSize", page.getPageSize());
 			List<User> userList = userService.findList(user);
-			page.setCount(userList.size());
+			
 			model.addAttribute("list", userList);
+			model.addAttribute("minCreateDate", minCreateDate);
+			model.addAttribute("maxCreateDate", maxCreateDate);
+			model.addAttribute("name", name);
 			model.addAttribute("page", page);
 		} catch (Exception e) {
 			e.printStackTrace();

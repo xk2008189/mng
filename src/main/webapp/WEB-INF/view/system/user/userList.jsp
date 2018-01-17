@@ -24,11 +24,13 @@
  <a class="btn btn-success radius r" id="userRefresh"  style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
 <div class="page-container">
 	<div class="text-c"> 
-		<form action="<%=request.getContextPath()%>/user/userList.do">
-			日期范围：<input type="text" onfocus="WdatePicker({ maxDate:'#F{$dp.$D(\'datemax\')||\'%y-%M-%d\'}' })" id="datemin" name="minCreateDate"  class="input-text Wdate" style="width:120px;">
+		<form action="<%=request.getContextPath()%>/user/userList.do" id = "searchForm">
+			<input type = "hidden" name = "currentPageNo" id = "currentPageNo"/>
+			<input type = "hidden" name = "pageSize" id = "pageSize" />
+			日期范围：<input type="text" value = "${minCreateDate }" onfocus="WdatePicker({ maxDate:'#F{$dp.$D(\'datemax\')||\'%y-%M-%d\'}' })" id="datemin" name="minCreateDate"  class="input-text Wdate" style="width:120px;">
 			-
-			<input type="text" onfocus="WdatePicker({ minDate:'#F{$dp.$D(\'datemin\')}',maxDate:'%y-%M-%d' })" id="datemax" name="maxCreateDate" class="input-text Wdate" style="width:120px;">
-			<input type="text" class="input-text" style="width:250px" placeholder="请输入姓名" id="name" name="name">
+			<input type="text" value = "${maxCreateDate }"  onfocus="WdatePicker({ minDate:'#F{$dp.$D(\'datemin\')}',maxDate:'%y-%M-%d' })" id="datemax" name="maxCreateDate" class="input-text Wdate" style="width:120px;">
+			<input type="text"  value = "${name }"  class="input-text" style="width:250px" placeholder="请输入姓名" id="name" name="name">
 			<button type="submit" class="btn btn-success" id="submitBtn" ><i class="Hui-iconfont">&#xe665;</i> 搜用户</button>
 		</form>
 	</div>
@@ -111,16 +113,19 @@ $(function(){
 		var laypage = layui.laypage;
 		laypage.render({
 		    elem: 'page',
-		    count: ${page.count},
+		    count: '${page.count}',
+		    limit: '${page.pageSize}',
+		    curr: '${page.currentPageNo}',
 		    layout: ['limit', 'prev', 'page', 'next'],
 		    jump: function(obj, first){
 		        //obj包含了当前分页的所有参数，比如：
 		        console.log(obj.curr); //得到当前页，以便向服务端请求对应页的数据。
 		        console.log(obj.limit); //得到每页显示的条数
-		        
+		        $("#currentPageNo").val(obj.curr);
+		        $("#pageSize").val(obj.limit);
 		        //首次不执行
 		        if(!first){
-		          //do something
+		        	$("#searchForm").submit();
 		        }
 		    }
 		});

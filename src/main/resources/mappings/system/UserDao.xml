@@ -273,7 +273,7 @@
     from sys_user
     where user_name = #{userName,jdbcType=VARCHAR}
   </select>
-  <select id="findList" resultMap="BaseResultMap">
+  <select id="findList" resultMap="BaseResultMap" parameterType="com.pro.system.entity.User">
 	SELECT
 		<include refid="Base_Column_List"/>
 	from sys_user
@@ -287,6 +287,27 @@
     <if test="sqlMap.name != null">
          and name like #{sqlMap.name,jdbcType=VARCHAR}
     </if>
-	ORDER BY create_date desc
+    ORDER BY create_date desc
+    <if test="sqlMap.index != null and sqlMap.index != '' or sqlMap.index == 0">
+         LIMIT #{sqlMap.index}
+    </if>
+    <if test="sqlMap.pageSize != null and sqlMap.pageSize != '' or sqlMap.pageSize == 0">
+	    , #{sqlMap.pageSize}
+    </if>
+  </select>
+  <select id="count" resultType="int" parameterType="com.pro.system.entity.User">
+	SELECT
+		count(*)
+	from sys_user
+	WHERE del_flag = '0'
+	<if test="sqlMap.minCreateDate != null">
+         and create_date >= str_to_date( #{sqlMap.minCreateDate,jdbcType=VARCHAR},'%Y-%m-%d')
+    </if>
+    <if test="sqlMap.maxCreateDate != null">
+         <![CDATA[and create_date <= str_to_date( #{sqlMap.maxCreateDate,jdbcType=VARCHAR},'%Y-%m-%d')]]>
+    </if>
+    <if test="sqlMap.name != null">
+         and name like #{sqlMap.name,jdbcType=VARCHAR}
+    </if>
   </select>
 </mapper>

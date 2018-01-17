@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.pro.common.Json.JsonMapper;
+import com.pro.common.base.Page;
 import com.pro.system.entity.User;
 import com.pro.system.service.UserService;
 
@@ -36,7 +37,8 @@ public class UserController {
     @RequestMapping("/userList.do")
     public String index(Model model, @RequestParam(value="minCreateDate", required=false) String minCreateDate,
     		 @RequestParam(value="maxCreateDate", required=false) String maxCreateDate,
-    		 @RequestParam(value="name", required=false) String name) throws ParseException{
+    		 @RequestParam(value="name", required=false) String name,
+    		 @RequestParam(value="page", required=false) Page page) throws ParseException{
     	try {
 			User user = new User();
 			Map<String, Object> sqlMap = new HashMap<String, Object>();
@@ -49,15 +51,56 @@ public class UserController {
 			if (!StringUtils.isEmpty(name)) {
 				sqlMap.put("name", "%" + name + "%");
 			}
+			if (page == null) {
+				page = new Page();
+			}
 			user.setSqlMap(sqlMap);
 			List<User> userList = userService.findList(user);
+			page.setCount(userList.size());
 			model.addAttribute("list", userList);
-			model.addAttribute("count", userList.size());
+			model.addAttribute("page", page);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
         return "system/user/userList";
     }
+    
+    /**
+     * 添加
+     * @return
+     */
+    @RequestMapping("/getUserList.do")
+    @ResponseBody
+    public Map<String,Object> add(@RequestParam(value="minCreateDate", required=false) String minCreateDate,
+   		 @RequestParam(value="maxCreateDate", required=false) String maxCreateDate,
+   		 @RequestParam(value="name", required=false) String name,
+   		 @RequestParam(value="page", required=false) Page page){
+    	Map<String,Object> resultMap = new HashMap<String,Object>();
+    	try {
+			User user = new User();
+			Map<String, Object> sqlMap = new HashMap<String, Object>();
+			if (!StringUtils.isEmpty(minCreateDate)) {
+				sqlMap.put("minCreateDate", minCreateDate);
+			}
+			if (!StringUtils.isEmpty(maxCreateDate)) {
+				sqlMap.put("maxCreateDate", maxCreateDate);
+			}
+			if (!StringUtils.isEmpty(name)) {
+				sqlMap.put("name", "%" + name + "%");
+			}
+			
+			user.setSqlMap(sqlMap);
+			List<User> userList = userService.findList(user);
+			page.setCount(userList.size());
+			resultMap.put("data", userList);
+			resultMap.put("page", page);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+    	return resultMap;
+    }
+    
+    
     
     @RequestMapping("/userAdd.do")
     public String userAdd( Model model){

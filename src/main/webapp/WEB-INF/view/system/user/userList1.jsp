@@ -16,7 +16,6 @@
 <link rel="stylesheet" type="text/css" href="<%=request.getContextPath() %>/static/lib/Hui-iconfont/1.0.8/iconfont.css" />
 <link rel="stylesheet" type="text/css" href="<%=request.getContextPath() %>/static/h-ui.admin/skin/default/skin.css" id="skin" />
 <link rel="stylesheet" type="text/css" href="<%=request.getContextPath() %>/static/h-ui.admin/css/style.css" />
-<link rel="stylesheet" type="text/css" href="<%=request.getContextPath() %>/static/layui/css/layui.css" />
 <title>用户管理</title>
 </head>
 <body>
@@ -32,7 +31,7 @@
 			<button type="submit" class="btn btn-success" id="submitBtn" ><i class="Hui-iconfont">&#xe665;</i> 搜用户</button>
 		</form>
 	</div>
-	<div class="cl pd-5 bg-1 bk-gray mt-20"> <span class="l"><a href="javascript:;" onclick="deleteMore()" class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i> 批量删除</a> <a href="javascript:;" onclick="admin_add('添加管理员','<%=request.getContextPath()%>' + '/user/userAdd.do','800','500')" class="btn btn-primary radius"><i class="Hui-iconfont">&#xe600;</i> 添加管理员</a></span> <span class="r">共有数据：<strong>${page.count}</strong> 条</span> </div>
+	<div class="cl pd-5 bg-1 bk-gray mt-20"> <span class="l"><a href="javascript:;" onclick="deleteMore()" class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i> 批量删除</a> <a href="javascript:;" onclick="admin_add('添加管理员','<%=request.getContextPath()%>' + '/user/userAdd.do','800','500')" class="btn btn-primary radius"><i class="Hui-iconfont">&#xe600;</i> 添加管理员</a></span> <span class="r">共有数据：<strong>${count }</strong> 条</span> </div>
 	<table class="table table-border table-bordered table-bg table-sort">
 		<thead>
 			<tr>
@@ -51,33 +50,7 @@
 				<th>操作</th>
 			</tr>
 		</thead>
-		<tbody>
-			<c:forEach items="${list}" var="user">
-				<tr class="text-c">
-					<td><input type="checkbox" value="${user.id}" name="userId"></td>
-					<td>${user.userCode}</td>
-					<td>${user.userName}</td>
-					<td>${user.name}</td>
-					<c:if test="${user.gender eq 0}">
-						<td>男</td>
-					</c:if>
-					<c:if test="${user.gender eq 1}">
-						<td>女</td>
-					</c:if>
-					<td>${user.age}</td>
-					<td>${user.email}</td>
-					<td>
-						<fmt:formatDate value="${user.createDate}" pattern="yyyy-MM-dd HH:mm:ss"/>
-					</td>
-					<td>${user.loginFlag}</td>
-					<td class="td-manage"><a style="text-decoration:none" onClick="admin_stop(this,'10001')" href="javascript:;" title="停用"><i class="Hui-iconfont">&#xe631;</i></a> 
-					<a title="编辑" href="javascript:;" onclick="admin_edit('用户编辑','<%=request.getContextPath()%>' + '/user/userUpdate.do?userId=${user.id}','1','800','500')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6df;</i></a> 
-					<a title="删除" href="javascript:;" onclick="admin_del(this,'${user.id}')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6e2;</i></a></td>
-				</tr>
-			</c:forEach>
-		</tbody>
 	</table>
-	<div id="page"></div>
 </div>
 <!--_footer 作为公共模版分离出去-->
 <script type="text/javascript" src="<%=request.getContextPath() %>/static/lib/jquery/1.9.1/jquery.min.js"></script> 
@@ -89,7 +62,6 @@
 <script type="text/javascript" src="<%=request.getContextPath() %>/static/lib/My97DatePicker/4.8/WdatePicker.js"></script> 
 <script type="text/javascript" src="<%=request.getContextPath() %>/static/lib/datatables/1.10.0/jquery.dataTables.min.js"></script> 
 <script type="text/javascript" src="<%=request.getContextPath() %>/static/lib/laypage/1.2/laypage.js"></script>
-<script type="text/javascript" src="<%=request.getContextPath() %>/static/layui/layui.js"></script>
 <script type="text/javascript">
 /*
 	参数解释：
@@ -100,31 +72,39 @@
 	h		弹出层高度（缺省调默认值）
 */
 $(function(){
-	/* $('.table-sort').dataTable({
-		"aaSorting": [[ 1, "desc" ]],//默认第几个排序
-		"bStateSave": true,//状态保存
-		"aoColumnDefs": [
-		  {"orderable":false,"aTargets":[0,6,9]}// 制定列不参与排序
-		]
-	}); */
-	layui.use(['laypage'], function(){
-		var laypage = layui.laypage;
-		laypage.render({
-		    elem: 'page',
-		    count: ${page.count},
-		    layout: ['limit', 'prev', 'page', 'next'],
-		    jump: function(obj, first){
-		        //obj包含了当前分页的所有参数，比如：
-		        console.log(obj.curr); //得到当前页，以便向服务端请求对应页的数据。
-		        console.log(obj.limit); //得到每页显示的条数
-		        
-		        //首次不执行
-		        if(!first){
-		          //do something
-		        }
-		    }
-		});
+	$('.table-sort').dataTable({
+		 ajax: "<%=request.getContextPath()%>/user/getUserList.do",
+		 columns: [
+				{ data : 'id',
+				  render : function (data, type, full, meta) {
+	                   return '<input type="checkbox" value="'+ data +'" name="userId">';
+	               }
+	            },
+		        { data: 'userCode' },
+		        { data: 'userName' },
+		        { data: 'name' },
+		        { data: 'gender' },
+		        { data: 'age' },
+		        { data: 'email' },
+		        { data: 'createDate', type : 'date'},
+		        { data: 'loginFlag'},
+		        { data : 'id',
+		          sClass : "td-manage",
+				  render : function (data, type, full, meta) {
+					   var html ="";
+					   html += '<a title="编辑" href="javascript:;" onclick="admin_edit(\'用户编辑\',\'<%=request.getContextPath()%>/user/userUpdate.do?userId='+data+'\',\'1\',\'800\',\'500\')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6df;</i></a> ';
+					   html += '<a title="删除" href="javascript:;" onclick="admin_del(this,\''+ data + '\')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6e2;</i></a>';
+	                   return html;
+	               }
+	            },
+		 ],
+		 aaSorting: [[ 1, "desc" ]],//默认第几个排序
+		 bStateSave: true,//状态保存
+		 aoColumnDefs: [
+			  {"orderable":false,"aTargets":[0,6,9]}// 制定列不参与排序
+		 ]
 	});
+	
 });
 /*管理员-增加*/
 function admin_add(title,url,w,h){

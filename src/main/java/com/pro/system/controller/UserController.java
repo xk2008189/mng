@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.cxf.common.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.pro.common.Json.JsonMapper;
+import com.pro.common.Util.UserUtil;
 import com.pro.common.base.Page;
 import com.pro.system.entity.User;
 import com.pro.system.service.UserService;
@@ -38,39 +41,28 @@ public class UserController {
     public String index(Model model, @RequestParam(value="minCreateDate", required=false) String minCreateDate,
     		 @RequestParam(value="maxCreateDate", required=false) String maxCreateDate,
     		 @RequestParam(value="name", required=false) String name,
-    		 @RequestParam(value="currentPageNo", required=false) Integer currentPageNo,
-    		 @RequestParam(value="pageSize", required=false) Integer pageSize) throws ParseException{
+    		 HttpServletRequest request) throws ParseException{
     	try {
+    		// 1.设置查询条件
 			User user = new User();
 			Map<String, Object> sqlMap = new HashMap<String, Object>();
 			if (!StringUtils.isEmpty(minCreateDate)) {
 				sqlMap.put("minCreateDate", minCreateDate);
+				model.addAttribute("minCreateDate", minCreateDate);
 			}
 			if (!StringUtils.isEmpty(maxCreateDate)) {
 				sqlMap.put("maxCreateDate", maxCreateDate);
+				model.addAttribute("maxCreateDate", maxCreateDate);
 			}
 			if (!StringUtils.isEmpty(name)) {
 				sqlMap.put("name", "%" + name + "%");
+				model.addAttribute("name", name);
 			}
 			user.setSqlMap(sqlMap);
-			int count = userService.count(user);
-			Page page = new Page();
-			if (currentPageNo != null) {
-				page.setCurrentPageNo(currentPageNo);
-			}
-			if (pageSize != null) {
-				page.setPageSize(pageSize);
-			}
-			page.setCount(count);
+			// 2.查询分页
+			Page<User> page = new Page<User>(request);
+			page = userService.findPage(page, user);
 			
-			sqlMap.put("index", (page.getCurrentPageNo() - 1) *  page.getPageSize());
-			sqlMap.put("pageSize", page.getPageSize());
-			List<User> userList = userService.findList(user);
-			
-			model.addAttribute("list", userList);
-			model.addAttribute("minCreateDate", minCreateDate);
-			model.addAttribute("maxCreateDate", maxCreateDate);
-			model.addAttribute("name", name);
 			model.addAttribute("page", page);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -78,40 +70,6 @@ public class UserController {
         return "system/user/userList";
     }
     
-    /**
-     * 添加
-     * @return
-     */
-    @RequestMapping("/getUserList.do")
-    @ResponseBody
-    public Map<String,Object> add(@RequestParam(value="minCreateDate", required=false) String minCreateDate,
-   		 @RequestParam(value="maxCreateDate", required=false) String maxCreateDate,
-   		 @RequestParam(value="name", required=false) String name,
-   		 @RequestParam(value="page", required=false) Page page){
-    	Map<String,Object> resultMap = new HashMap<String,Object>();
-    	try {
-			User user = new User();
-			Map<String, Object> sqlMap = new HashMap<String, Object>();
-			if (!StringUtils.isEmpty(minCreateDate)) {
-				sqlMap.put("minCreateDate", minCreateDate);
-			}
-			if (!StringUtils.isEmpty(maxCreateDate)) {
-				sqlMap.put("maxCreateDate", maxCreateDate);
-			}
-			if (!StringUtils.isEmpty(name)) {
-				sqlMap.put("name", "%" + name + "%");
-			}
-			
-			user.setSqlMap(sqlMap);
-			List<User> userList = userService.findList(user);
-			page.setCount(userList.size());
-			resultMap.put("data", userList);
-			resultMap.put("page", page);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-    	return resultMap;
-    }
     
     
     
@@ -129,14 +87,15 @@ public class UserController {
     public Map<String,Object> add(User user){
     	Map<String,Object> resultMap = new HashMap<String,Object>();
     	try {
+    		String username = UserUtil.getLoginUserName();
 			Date now = new Date();
 			user.setId(UUID.randomUUID().toString());
 			user.setDelFlag("0");
 			user.setLoginFlag("0");
 			user.setDepartmentId("1");
-			user.setCreateBy("xiangkun");
+			user.setCreateBy(username);
 			user.setCreateDate(now);
-			user.setUpdateBy("xiangkun");
+			user.setUpdateBy(username);
 			user.setUpdateDate(now);
 			userService.insert(user);
 			resultMap.put("OK", 1);
@@ -164,11 +123,12 @@ public class UserController {
     public Map<String,Object> update(User user){
     	Map<String,Object> resultMap = new HashMap<String,Object>();
     	try {
+    		String username = UserUtil.getLoginUserName();
 			Date now = new Date();
 			user.setDelFlag("0");
 			user.setLoginFlag("0");
 			user.setDepartmentId("1");
-			user.setUpdateBy("xiangkun");
+			user.setUpdateBy(username);
 			user.setUpdateDate(now);
 			userService.updateByPrimaryKeySelective(user);
 			resultMap.put("OK", 1);

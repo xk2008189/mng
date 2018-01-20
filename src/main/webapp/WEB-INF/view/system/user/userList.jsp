@@ -54,7 +54,7 @@
 			</tr>
 		</thead>
 		<tbody>
-			<c:forEach items="${list}" var="user">
+			<c:forEach items="${page.list}" var="user">
 				<tr class="text-c">
 					<td><input type="checkbox" value="${user.id}" name="userId"></td>
 					<td>${user.userCode}</td>
@@ -71,7 +71,12 @@
 					<td>
 						<fmt:formatDate value="${user.createDate}" pattern="yyyy-MM-dd HH:mm:ss"/>
 					</td>
-					<td>${user.loginFlag}</td>
+					<c:if test="${user.loginFlag eq 0}">
+						<td>否</td>
+					</c:if>
+					<c:if test="${user.loginFlag eq 1}">
+						<td>是</td>
+					</c:if>
 					<td class="td-manage"><a style="text-decoration:none" onClick="admin_stop(this,'10001')" href="javascript:;" title="停用"><i class="Hui-iconfont">&#xe631;</i></a> 
 					<a title="编辑" href="javascript:;" onclick="admin_edit('用户编辑','<%=request.getContextPath()%>' + '/user/userUpdate.do?userId=${user.id}','1','800','500')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6df;</i></a> 
 					<a title="删除" href="javascript:;" onclick="admin_del(this,'${user.id}')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6e2;</i></a></td>
@@ -79,7 +84,7 @@
 			</c:forEach>
 		</tbody>
 	</table>
-	<div id="page"></div>
+	<div id="page" style="text-align:right" ></div>
 </div>
 <!--_footer 作为公共模版分离出去-->
 <script type="text/javascript" src="<%=request.getContextPath() %>/static/lib/jquery/1.9.1/jquery.min.js"></script> 

@@ -3,6 +3,7 @@ package com.pro.system.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.pro.common.base.BaseService;
 import com.pro.common.base.Page;
@@ -14,7 +15,8 @@ import com.pro.system.entity.User;
  * @author xiangkun
  *
  */
-@Service  
+@Service
+@Transactional
 public class UserService extends BaseService<UserDao, User>{  
     @Autowired  
     private UserDao userDao;  

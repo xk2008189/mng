@@ -7,7 +7,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.pro.common.base.BaseService;
 import com.pro.common.base.Page;
+import com.pro.system.dao.DepartmentDao;
 import com.pro.system.dao.RoleDao;
+import com.pro.system.entity.Department;
 import com.pro.system.entity.Role;
 import com.pro.system.entity.User;
 
@@ -18,9 +20,9 @@ import com.pro.system.entity.User;
  */
 @Service
 @Transactional
-public class RoleService extends BaseService<RoleDao, Role>{  
+public class DepartmentService extends BaseService<DepartmentDao, Department>{  
     @Autowired  
-    private RoleDao roleDao;  
+    private DepartmentDao departmentDao;  
   
     /**
      * 查询分页
@@ -28,12 +30,12 @@ public class RoleService extends BaseService<RoleDao, Role>{
      * @param user
      * @return
      */
-    public Page<Role> findPage(Page<Role> page,Role role) {
-    	int count = this.count(role);
+    public Page<Department> findPage(Page<Department> page,Department department) {
+    	int count = this.count(department);
     	page.setCount(count);
-    	role.getSqlMap().put("index", (page.getCurrentPageNo() - 1) *  page.getPageSize());
-    	role.getSqlMap().put("pageSize", page.getPageSize());
-    	page.setList(this.findList(role));
+    	department.getSqlMap().put("index", (page.getCurrentPageNo() - 1) *  page.getPageSize());
+    	department.getSqlMap().put("pageSize", page.getPageSize());
+    	page.setList(this.findList(department));
     	return page;
     }
 } 

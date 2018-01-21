@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pro.system.dao.RoleDao">
+  <resultMap id="BaseResultMap" type="com.pro.system.entity.Role">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="role_code" jdbcType="VARCHAR" property="roleCode" />
+    <result column="role_type" jdbcType="CHAR" property="roleType" />
+    <result column="useable" jdbcType="CHAR" property="useable" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="del_flag" jdbcType="CHAR" property="delFlag" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    ID, name, role_code, role_type, useable, create_by, create_date, update_by, update_date, 
+    remark, del_flag
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sys_role
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from sys_role
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.pro.system.entity.Role">
+    insert into sys_role (ID, name, role_code, 
+      role_type, useable, create_by, 
+      create_date, update_by, update_date, 
+      remark, del_flag)
+    values (#{id,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{roleCode,jdbcType=VARCHAR}, 
+      #{roleType,jdbcType=CHAR}, #{useable,jdbcType=CHAR}, #{createBy,jdbcType=VARCHAR}, 
+      #{createDate,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR}, #{updateDate,jdbcType=TIMESTAMP}, 
+      #{remark,jdbcType=VARCHAR}, #{delFlag,jdbcType=CHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.pro.system.entity.Role">
+    insert into sys_role
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="name != null">
+        name,
+      </if>
+      <if test="roleCode != null">
+        role_code,
+      </if>
+      <if test="roleType != null">
+        role_type,
+      </if>
+      <if test="useable != null">
+        useable,
+      </if>
+      <if test="createBy != null">
+        create_by,
+      </if>
+      <if test="createDate != null">
+        create_date,
+      </if>
+      <if test="updateBy != null">
+        update_by,
+      </if>
+      <if test="updateDate != null">
+        update_date,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+      <if test="delFlag != null">
+        del_flag,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="roleCode != null">
+        #{roleCode,jdbcType=VARCHAR},
+      </if>
+      <if test="roleType != null">
+        #{roleType,jdbcType=CHAR},
+      </if>
+      <if test="useable != null">
+        #{useable,jdbcType=CHAR},
+      </if>
+      <if test="createBy != null">
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null">
+        #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="delFlag != null">
+        #{delFlag,jdbcType=CHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.pro.system.entity.Role">
+    update sys_role
+    <set>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="roleCode != null">
+        role_code = #{roleCode,jdbcType=VARCHAR},
+      </if>
+      <if test="roleType != null">
+        role_type = #{roleType,jdbcType=CHAR},
+      </if>
+      <if test="useable != null">
+        useable = #{useable,jdbcType=CHAR},
+      </if>
+      <if test="createBy != null">
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="delFlag != null">
+        del_flag = #{delFlag,jdbcType=CHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.pro.system.entity.Role">
+    update sys_role
+    set name = #{name,jdbcType=VARCHAR},
+      role_code = #{roleCode,jdbcType=VARCHAR},
+      role_type = #{roleType,jdbcType=CHAR},
+      useable = #{useable,jdbcType=CHAR},
+      create_by = #{createBy,jdbcType=VARCHAR},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      update_by = #{updateBy,jdbcType=VARCHAR},
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+      remark = #{remark,jdbcType=VARCHAR},
+      del_flag = #{delFlag,jdbcType=CHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <select id="findList" resultMap="BaseResultMap" parameterType="com.pro.system.entity.Role">
+	SELECT
+		<include refid="Base_Column_List"/>
+	from sys_role
+	WHERE del_flag = '0'
+	<if test="sqlMap.name != null">
+         and name like #{sqlMap.name,jdbcType=VARCHAR}
+    </if>
+    <if test="sqlMap.roleCode != null">
+         and roleCode like #{sqlMap.roleCode,jdbcType=VARCHAR}
+    </if>
+    ORDER BY create_date desc
+    <if test="sqlMap.index != null and sqlMap.index != '' or sqlMap.index == 0">
+         LIMIT #{sqlMap.index}
+    </if>
+    <if test="sqlMap.pageSize != null and sqlMap.pageSize != '' or sqlMap.pageSize == 0">
+	    , #{sqlMap.pageSize}
+    </if>
+  </select>
+  <select id="count" resultType="int" parameterType="com.pro.system.entity.Role">
+	SELECT
+		count(*)
+	from sys_role
+	WHERE del_flag = '0'
+	<if test="sqlMap.name != null">
+         and name like #{sqlMap.name,jdbcType=VARCHAR}
+    </if>
+    <if test="sqlMap.roleCode != null">
+         and roleCode like #{sqlMap.roleCode,jdbcType=VARCHAR}
+    </if>
+  </select>
+</mapper>

@@ -107,13 +107,6 @@
 	h		弹出层高度（缺省调默认值）
 */
 $(function(){
-	/* $('.table-sort').dataTable({
-		"aaSorting": [[ 1, "desc" ]],//默认第几个排序
-		"bStateSave": true,//状态保存
-		"aoColumnDefs": [
-		  {"orderable":false,"aTargets":[0,6,9]}// 制定列不参与排序
-		]
-	}); */
 	layui.use(['laypage'], function(){
 		var laypage = layui.laypage;
 		laypage.render({
@@ -176,7 +169,7 @@ function deleteMore() {
 				data:{"seleteIds" : JSON.stringify(seleteIds)},
 				dataType: 'json',
 				success: function(data){
-					$(obj).parents("tr").remove();
+					location.replace(location.href);
 					layer.msg('已删除!',{icon:1,time:1000});
 				},
 				error:function(data) {
@@ -185,9 +178,6 @@ function deleteMore() {
 			});		
 		});
 	}
-	
-	
-	
 }
 
 /*管理员-停用*/

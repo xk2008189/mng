@@ -1,6 +1,7 @@
 package com.pro.common.base;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Map;
 
 public abstract class BaseEntity<T> implements Serializable {
@@ -13,7 +14,7 @@ public abstract class BaseEntity<T> implements Serializable {
 	/**
 	 * 需要拼接的SQL
 	 */
-	private Map<String,Object> sqlMap;
+	private Map<String,Object> sqlMap = new HashMap<String, Object>();
 
 	public Map<String,Object> getSqlMap() {
 		return sqlMap;

@@ -11,6 +11,7 @@
 <meta http-equiv="Cache-Control" content="no-siteapp" />
 <link rel="Bookmark" href="/favicon.ico" >
 <link rel="Shortcut Icon" href="/favicon.ico" />
+<link rel="stylesheet" type="text/css" href="<%=request.getContextPath() %>/static/layui/css/layui.css" />
 <title>用户管理</title>
 </head>
 <body>

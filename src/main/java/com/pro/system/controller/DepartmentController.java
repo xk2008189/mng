@@ -4,6 +4,7 @@ package com.pro.system.controller;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -41,7 +42,26 @@ public class DepartmentController {
     }
     
     
-    
+    /**
+     * 添加
+     * @return
+     */
+    @RequestMapping("/getTreeData.do")
+    @ResponseBody
+    public Map<String,Object> getTreeData(){
+    	Map<String,Object> resultMap = new HashMap<String,Object>();
+    	try {
+    		Department department =  new Department();
+    		List<Map<String,Object>> treeData = departmentService.getTreeData(department);
+			resultMap.put("OK", 1);
+			resultMap.put("treeData", treeData);
+		} catch (Exception e) {
+			e.printStackTrace();
+			resultMap.put("OK", -1);
+			resultMap.put("msg", e.getMessage());
+		}
+    	return resultMap;
+    }
     
     @RequestMapping("/departmentAdd.do")
     public String departmentAdd( Model model){

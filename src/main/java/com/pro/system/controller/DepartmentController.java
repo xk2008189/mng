@@ -43,7 +43,7 @@ public class DepartmentController {
     
     
     /**
-     * 添加
+     * 获取部门树数据
      * @return
      */
     @RequestMapping("/getTreeData.do")
@@ -55,6 +55,27 @@ public class DepartmentController {
     		List<Map<String,Object>> treeData = departmentService.getTreeData(department);
 			resultMap.put("OK", 1);
 			resultMap.put("treeData", treeData);
+		} catch (Exception e) {
+			e.printStackTrace();
+			resultMap.put("OK", -1);
+			resultMap.put("msg", e.getMessage());
+		}
+    	return resultMap;
+    }
+    
+    /**
+     * 获取部门数据
+     * @return
+     */
+    @RequestMapping("/getTreeTableData.do")
+    @ResponseBody
+    public Map<String,Object> getTreeTableData(){
+    	Map<String,Object> resultMap = new HashMap<String,Object>();
+    	try {
+    		Department department =  new Department();
+    		List<Department> departmentList = departmentService.findList(department);
+			resultMap.put("OK", 1);
+			resultMap.put("departmentList", departmentList);
 		} catch (Exception e) {
 			e.printStackTrace();
 			resultMap.put("OK", -1);

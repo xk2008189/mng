@@ -10,6 +10,7 @@ import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -69,11 +70,13 @@ public class DepartmentController {
      */
     @RequestMapping("/getTreeTableData.do")
     @ResponseBody
-    public Map<String,Object> getTreeTableData(){
+    public Map<String,Object> getTreeTableData(@RequestParam(value="departmentId", required=false) String departmentId){
     	Map<String,Object> resultMap = new HashMap<String,Object>();
     	try {
-    		Department department =  new Department();
-    		List<Department> departmentList = departmentService.findList(department);
+    		if (StringUtils.isBlank(departmentId)) {
+    			departmentId = "1";
+    		}
+    		List<Department> departmentList = departmentService.getTreeTableData(departmentId);
 			resultMap.put("OK", 1);
 			resultMap.put("departmentList", departmentList);
 		} catch (Exception e) {
@@ -85,7 +88,8 @@ public class DepartmentController {
     }
     
     @RequestMapping("/departmentAdd.do")
-    public String departmentAdd( Model model){
+    public String departmentAdd( Model model, @RequestParam(value="parentId", required=true) String parentId){
+    	model.addAttribute("parentId", parentId);
         return "system/department/departmentAdd";
     }
     
@@ -98,6 +102,32 @@ public class DepartmentController {
     public Map<String,Object> add(Department department){
     	Map<String,Object> resultMap = new HashMap<String,Object>();
     	try {
+    		
+    		String parentId = department.getParentId();
+    		if (StringUtils.isBlank(parentId)) {
+    			resultMap.put("OK", -1);
+    			resultMap.put("msg", "缺少父节点ID");
+    		}
+    		Department parentDepartment = 
+    				departmentService.selectByPrimaryKey(parentId);
+    		
+    		String parentGrade = parentDepartment.getGrade();
+    		department.setGrade((Integer.parseInt(parentGrade) + 1) + "");
+    		
+    		// 更新排序
+    		String parentSort = parentDepartment.getSort();
+    		List<Department> departmentChildList = departmentService.findChildList(parentDepartment);
+    		if (departmentChildList != null && departmentChildList.size() > 0) {
+    			String lastSort = departmentChildList.get(0).getSort();
+    			String lastIndextStr = lastSort.replace(parentSort + "_", "");
+    			int lastIndex = Integer.parseInt(lastIndextStr);
+    			String sort = parentSort + "_" + (lastIndex + 1);
+    			department.setSort(sort);
+    		} else {
+    			String sort = parentSort + "_1";
+    			department.setSort(sort);
+    		}
+    		
     		String username = UserUtil.getLoginUserName();
 			Date now = new Date();
 			department.setId(UUID.randomUUID().toString());
@@ -156,8 +186,15 @@ public class DepartmentController {
     public Map<String,Object> delete(@RequestParam(value="departmentId", required=true) String departmentId){
     	Map<String,Object> resultMap = new HashMap<String,Object>();
     	try {
-    		departmentService.deleteByPrimaryKey(departmentId);
-			resultMap.put("OK", 1);
+    		Department  department = departmentService.selectByPrimaryKey(departmentId);
+    		List<Department> departmentChildList = departmentService.findChildList(department);
+    		if (departmentChildList != null && departmentChildList.size() > 0) {
+    			resultMap.put("OK", -1);
+    			resultMap.put("msg", "请先删除子节点");
+    		} else {
+    			departmentService.deleteByPrimaryKey(departmentId);
+    			resultMap.put("OK", 1);
+    		}
 		} catch (Exception e) {
 			e.printStackTrace();
 			resultMap.put("OK", -1);

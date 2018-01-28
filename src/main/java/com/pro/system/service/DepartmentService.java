@@ -2,6 +2,8 @@ package com.pro.system.service;
 
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -63,5 +65,74 @@ public class DepartmentService extends BaseService<DepartmentDao, Department>{
     		}
     	}
     	return treeList;
+    }
+    
+    /**
+     * 查询树表格数据
+     * @param departmentId
+     * @return
+     */
+    public List<Department> getTreeTableData(String departmentId){
+    	Department department = this.selectByPrimaryKey(departmentId);
+    	List<Department> departmentList = this.findAllChildList(department);
+    	Collections.sort(departmentList, new Comparator(){  
+            @Override  
+            public int compare(Object o1, Object o2) {  
+            	Department dep1=(Department)o1;  
+            	Department dep2=(Department)o2;  
+            	String sort1 = dep1.getSort();
+            	String sort2 = dep2.getSort();
+            	if (sort1.equals(sort2)) {
+            		return 0;
+            	}
+            	String[] sorts1 = sort1.split("_");
+            	String[] sorts2 = sort2.split("_");
+            	int size = 1;
+            	if (sorts1.length >= sorts2.length) {
+            		size  = sorts2.length;
+            	} else {
+            		size  = sorts1.length;
+            	}
+            	
+            	for (int i = 0; i < size; i++) {
+            		if (sorts1[i].equals(sorts2[i])) {
+            			if (sorts1.length == i + 1) {
+            				return -1;
+            			}
+            			if (sorts2.length == i + 1) {
+            				return 1;
+            			}
+            			continue;
+            		}
+            		if (Integer.parseInt(sorts1[i]) > Integer.parseInt(sorts2[i])) {
+            			return 1;
+            		} else {
+            			return -1;
+            		}
+            	}
+            	return 0;
+            }             
+        });  
+    	
+    	return departmentList;
+    }
+    
+    /**
+     * 查询子节点数据
+     * @param department
+     * @return
+     */
+    public List<Department> findChildList(Department department) {
+    	return departmentDao.findChildList(department);
+    }
+    
+    /**
+     * 查询所有子节点数据
+     * @param department
+     * @return
+     */
+    public List<Department> findAllChildList(Department department) {
+    	department.setSort(department.getSort() + "%");
+    	return departmentDao.findAllChildList(department);
     }
 } 

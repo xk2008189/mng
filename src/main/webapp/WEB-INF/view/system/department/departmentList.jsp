@@ -26,7 +26,9 @@
 					<th width = "150px">部门名称</th>
 					<th>部门编号</th>
 					<th>部门级别</th>
+					<th>排序</th>
 					<th>是否可用</th>
+					<th>操作</th>
 				</tr>
 			</thead>
 			<tbody id = "tbody">
@@ -77,6 +79,16 @@ function showCode(str) {
 	code.append("<li>"+str+"</li>");
 }
 
+/*管理员-增加*/
+function admin_add(title,url,id,w,h){
+	layer_show(title,url,w,h);
+}
+
+/*管理员-编辑*/
+function admin_edit(title,url,id,w,h){
+	layer_show(title,url,w,h);
+}
+
 
 /**
  * 获取树的数据
@@ -101,6 +113,27 @@ function getTreeData(){
 	});	
 }
 
+function admin_del(obj,id){
+	layer.confirm('部门删除须谨慎，确认要删除吗？',function(index){
+		$.ajax({
+			type: 'POST',
+			url: '<%=request.getContextPath()%>' + '/department/delete.do?departmentId='+id,
+			dataType: 'json',
+			success: function(data){
+				if (data.OK == 1) {
+					$(obj).parents("tr").remove();
+					layer.msg('已删除!',{icon:1,time:1000});
+				} else {
+					layer.msg(data.msg,{icon:1,time:1000});
+				}
+			},
+			error:function(data) {
+				console.log(data.msg);
+			},
+		});		
+	});
+}
+
 /**
  * 获取树状表的数据
  */
@@ -119,7 +152,15 @@ function getTreeTableData() {
 						html += "<td>" + departmentList[i].name + "</td>";
 						html += "<td>" + departmentList[i].departmentCode + "</td>";
 						html += "<td>" + departmentList[i].grade + "</td>";
+						html += "<td>" + departmentList[i].sort + "</td>";
 						html += "<td>" + departmentList[i].useable + "</td>";
+						html += "<td class='td-manage'><a title='添加' href='javascript:;' ";
+						html += "onclick=\"admin_add('部门添加','<%=request.getContextPath()%>/department/departmentAdd.do?parentId="+ departmentList[i].id +"','1','800','500')\"";
+						html += "class='ml-5' style='text-decoration:none'><i class='Hui-iconfont'>&#xe600;</i></a> ";
+						html += "<a title='编辑' href='javascript:;' ";
+						html += "onclick=\"admin_edit('部门编辑','<%=request.getContextPath()%>/department/departmentUpdate.do?departmentId="+ departmentList[i].id +"','1','800','500')\"";
+						html += "class='ml-5' style='text-decoration:none'><i class='Hui-iconfont'>&#xe6df;</i></a> ";
+						html += "<a title='删除' href='javascript:;' onclick=\"admin_del(this,'" + departmentList[i].id + "')\" class='ml-5' style='text-decoration:none'><i class='Hui-iconfont'>&#xe6e2;</i></a></td>";
 						html += "</tr>";
 					}
 					$("#tbody").html(html);

@@ -204,4 +204,20 @@
 	from sys_department
 	WHERE del_flag = '0'
   </select>
+  <select id="findChildList" resultMap="BaseResultMap" parameterType="com.pro.system.entity.Department">
+	SELECT
+		<include refid="Base_Column_List"/>
+	from sys_department
+	WHERE del_flag = '0'
+	and parent_id = #{id,jdbcType=VARCHAR}
+    ORDER BY create_date desc
+  </select>
+  <select id="findAllChildList" resultMap="BaseResultMap" parameterType="com.pro.system.entity.Department">
+	SELECT
+		<include refid="Base_Column_List"/>
+	from sys_department
+	WHERE del_flag = '0'
+	and sort like #{sort,jdbcType=VARCHAR}
+    ORDER BY create_date desc
+  </select>
 </mapper>
